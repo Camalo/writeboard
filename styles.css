@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    
+    background-color: #E5E5E5;
+    background: #E5E5E5 !important;
+}
+
+.container {
+    padding-top: 20px;
+    background-color: #E5E5E5;
+}
+
+button {
+    border: none;
+    background: none;
+}
+
+.side-bar {
+    width: 60px;
+    background-color:  #f7f7f7;
+    border-radius: 15px;
+   
+}
+.side-bar-button{
+    margin-bottom: 30px;
+}
+.top-bar {
+    width: 100%;
+    background-color:  #f7f7f7;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+.canvas-container{
+    width: 100%;
+    height: 500px;
+    border-radius: 15px;
+    background-color:  #f7f7f7;
+}
+#WriteBoard{
+    width: 100%;
+}
+
+/* фоновый цвет background: #E5E5E5; */
+
+/* navbar background: linear-gradient(90.17deg, #86D3EC 7.31%, #5EACF1 37.82%, #4B99F4 55.33%);
+border-radius: 0px 0px 15px 15px; */
+
+/* canvas background: #EBEBEB;
+width: 902px;
+height: 486px;
+border: 3px solid #4B99F4;
+box-sizing: border-box;
+border-radius: 15px; */
+
+/* SIDE BAR
+width: 68px;
+height: 282px;
+
+background: #EBEBEB;
+border-radius: 15px; */
+
+/* TOP BAR
+width: 902px;
+height: 57px;
+
+background: #EBEBEB;
+border-radius: 15px; */
+
+/* SAVE BUTTON 
+width: 68px;
+height: 57px;
+
+background: #EBEBEB;
+border-radius: 15px;*/
