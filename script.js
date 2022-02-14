@@ -1,134 +1,139 @@
-var canvas = document.getElementById("WriteBoard");
-//ЧАСТЬ ДЛЯ ОТРИСОВКИ ЦВЕТОВ
-let topbar = document.getElementById("topbar");
+let canvas = document.getElementById("WriteBoard");
+let context = canvas.getContext('2d');
 
-let colors = ["#212020", "#DFEE36", "#F0C838", "#E18229", "#FF2B2B", "#EC6EAA","#CA80F6", "#7024D0", "#4E37DE", "#4B7BF4", "#33ABD0", "#23C79F","#218C2B"];
+let topbar = document.getElementById("topbar");
+let stikers =  document.getElementById("stikers");
+const drawer = new CanvasDrawer(canvas, context);
+const brush = new Brush(context);
+
+// TODO: переименовать картинки из jpg в png
+// TODO: добавить функцию перетаскивания стикеров на холсте 
+// TODO: настройка ширины кисти
+// TODO: добавление и набор текста
+// TODO: удаление выбронного текста
+// TODO: удаление выброванного стикера
+// TODO: ластик +
+// TODO: очистить весь холст +
+
 
 document.addEventListener("DOMContentLoaded", () => {
-let btn = "";
+  
+  // отрисовать цвета
+  let colors = brush.colors;
+  let btn = "";
+  let btnId = 1;
   colors.forEach(element => {
-     btn += '<button class="rounded-color-button" type="button" style="background: '+element+' "></button>';
+     btn += '<button id= ' + btnId++ + ' class="rounded-color-button" type="button" style="background: '+element+' "></button>';
   });
-  topbar.innerHTML = btn;
+  topbar.innerHTML= btn;
+
+  //отрисовать стикеры
+  let html = '';
+  for(let i = 0; i < 8; i++){
+    html += '<img class="image-button" src="images/stiker' + (i + 1) + '.jpg" height="130" width="130" />';
+  }
+
+  for(let i =0; i < 4; i++){
+    html += '<img class="image-button" src="images/paragraph' + (i + 1) + '.png" height="130" width="130" />';
+  }
+
+  for(let i =0; i < 4; i++){
+    html += '<img class="image-button" src="images/dialog' + (i + 1) + '.png" height="130" width="130" />';
+  }
+
+  stikers.innerHTML = html;
 });
 
+canvas.addEventListener('input', function(e){
+  console.log('input!');
+});
+document.addEventListener("click", function(event) {
+  let target = event.target;
 
-//ЧАСТЬ РИСОВАНИЯ
-var context = canvas.getContext('2d');
+  // выбор цвета
+  if(target.classList.contains('rounded-color-button')){
+      brush.setColor(target.id - 1);
+  }
+  
+  if(target.classList.contains('image-button')){
 
-context.beginPath();
-context.fillRect(0,0,10,10);
-context.fillRect(100,100,10,10);
-context.fillRect(200,100,10,10);
-context.fillRect(300,100,10,10);
-
-
-
-let mouse = {x: 0, y:0 };
-let isDraw = false;
-
+    drawer.currentStiker = target.src;
+    drawer.isStiker = true;
+  }
+  // 
+  if (target.id == 'addText'){
+    console.log('addText is Clicked');
+    drawer.isText = true;
+  }
+  if(target.id =='clearBtn'){
+    drawer.clearCanvas();
+  }
+  if(target.id =='eraserBtn'){
+    if(brush.isEraser == false){
+      brush.useEraser();
+      brush.isEraser = true;
+    }
+      else {
+        brush.isEraser = false;
+        brush.useBrush();
+      }
+  }
+  if(target.id =='pencilBtn'){
+    console.log ('Is pencil');
+    brush.setLineWidth(5);
+  }
+  if(target.id =='markerBtn'){
+    console.log ('Is marker');
+    brush.setLineWidth(20);
+    
+  }
+  
+})
+// РИСОВАНИЕ
+canvas.addEventListener("click", function(e){
+    if(drawer.isStiker == true){
+      drawer.drawStiker(e);
+      drawer.isStiker = false;
+      // console.log();
+    } else if(drawer.isText == true){
+      
+      drawer.writeText('something', e);
+      drawer.isText = false;
+    }
+});
 
 canvas.addEventListener("mousedown", function(e){
-  mouse.x = getCursorPositionX(canvas,e);
-  mouse.y = getCursorPositionY(canvas,e);
-  console.log('clientTop ' + canvas.clientTop + ' = my mouse ' + mouse.y);
-  isDraw = true;
-  context.beginPath();
-  context.moveTo(mouse.x, mouse.y);
+  drawer.beginDraw(e);
 });
 
 canvas.addEventListener("mousemove", function(e){
-  if(isDraw == true){
-                 
-    mouse.x = getCursorPositionX(canvas,e);
-    mouse.y = getCursorPositionY(canvas,e);
-
-    context.lineTo(mouse.x, mouse.y);
-    context.stroke();
-}
+  drawer.draw(e);
 });
 
 canvas.addEventListener("mouseup", function(e){
-  
-  mouse.x = getCursorPositionX(canvas,e);
-  mouse.y = getCursorPositionY(canvas,e);
-  context.lineTo(mouse.x, mouse.y);
-  context.stroke();
-  context.closePath();
-  isDraw = false;
+  drawer.endDraw(e);
 });
 
-
-function getCursorPositionX(canvas, event){
-  const rect = canvas.getBoundingClientRect()
-  console.log('coordinate x ' + (event.clientX - rect.left));
-  return  event.clientX - rect.left;
-}
-
-function getCursorPositionY(canvas, event){
-  const rect = canvas.getBoundingClientRect()
-  console.log('coordinate x ' + (event.clientY - rect.top));
-  return  event.clientY - rect.top;
-}
 
 //СОХРАНЕНИЕ
 let saveBtn = document.getElementById('save-button');
 
-function getImage(){
- 
-  var image = new Image();
-  image.src = canvas.toDataURL('image/jpeg', 1.0);
-  return image;
-}
-
-function saveImage(image) {
-  var link = document.createElement("a");
-
-  link.setAttribute("href", image.src);
-  link.setAttribute("download", "canvasImage");
-  link.click();
-}
-
 saveBtn.onclick = function (e){
-  var image = getImage();
-  saveImage(image);
+  LoaderPictire.save(new Image());
 }
 
-// saveBtn.onclick = function(e){
-//   var dataURL = canvas.toDataURL("image/jpeg");
+// //ЗАГРУЗКА РИСУНКА 
+// // Создаем объект изображения
+// var img1 = new Image();
 
-//   var link = document.createElement("a");
-  
-//   link.href = dataURL;
-  
-//   link.download = "my-image-name.jpg";
-  
-//   link.click();
-// }
-
-
-// canvas.onmousemove = function (e) {
-//   ctx.lineTo(getCursorPositionX(canvas,e), getCursorPositionY(canvas,e));
-//   ctx.stroke();
-
+// // Привязываем функцию к событию onload
+// // Это указывает браузеру, что делать, когда изображение загружено
+// img1.onload = function() {
+//   //куда кликнет мышь
+// 	context.drawImage(img1, 100, 50);
 // };
 
+// ЗАГРУЗКА ИЗОБРАЖЕНИЯ НА CANVAS 
 
-
-// canvas.addEventListener('mousedown', function(e) {
-//     //переместиться на точку начала рисования при нажатт на мышь
-   
-// })
-
-
-// //выбор цвета
-// var color = document.getElementById("color");
-
-
-// //Установка цвета
-// color.addEventListener('change', (event) => {
-   
-
-//     ctx.fillStyle = event.target.value;
-//     ctx.fillRect(10, 10, 100, 100);
-//   });
+// ДОБАВЛЕНИЕ СТИКЕРА - один фиксированный размер и из моих изображений
+// ДОБАВЛЕНИЕ ФОНА - из компьютера пользователя любого размера на весь canvas

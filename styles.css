@@ -53,6 +53,26 @@ button {
     width: 100%;
 }
 
+/* STIKERS */
+
+.stikers-container {
+    /* padding-top: 30px; */
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 550px;
+    overflow-y: scroll; 
+}
+
+
+.image-button {
+    margin: 5px;
+    height: 130px;
+    width: 130px;
+}
+
+
 /* фоновый цвет background: #E5E5E5; */
 
 /* navbar background: linear-gradient(90.17deg, #86D3EC 7.31%, #5EACF1 37.82%, #4B99F4 55.33%);
